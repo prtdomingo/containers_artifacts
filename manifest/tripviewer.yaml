@@ -1,0 +1,47 @@
+apiVersion: apps/v1 # Where in the API it resides
+kind: Deployment # The kind of workload we're creating
+metadata:
+  name: tripviewer # This will be the name of the deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - image: registrykrd5328.azurecr.io/tripinsights/tripviewer:latest
+          name: tripviewer
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: TRIPS_API_ENDPOINT
+              value: http://52.175.123.58
+            - name: USERPROFILE_API_ENDPOINT
+              value: http://52.175.123.58
+            - name: BING_MAPS_KEY
+              value: "<BING_MAPS_KEY>"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer 
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: tripviewer
