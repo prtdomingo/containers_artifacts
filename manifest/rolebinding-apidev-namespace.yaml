@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: apidev-user-access
+  namespace: api
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: apidev-full-access
+subjects:
+- kind: Group
+  namespace: api
+  name: 3de2f9f7-827b-4f61-baa7-f3d101a6040a
