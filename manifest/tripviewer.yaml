@@ -2,6 +2,9 @@ apiVersion: apps/v1 # Where in the API it resides
 kind: Deployment # The kind of workload we're creating
 metadata:
   name: tripviewer # This will be the name of the deployment
+  namespace: web
+  labels:
+    name: tripviewer
 spec:
   selector:
     matchLabels:
@@ -32,13 +35,14 @@ spec:
             - name: USERPROFILE_API_ENDPOINT
               value: http://52.175.123.58
             - name: BING_MAPS_KEY
-              value: "<BING_MAPS_KEY>"
+              value: "<BING_API>"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: tripviewer 
+  namespace: web
 spec:
   type: ClusterIP
   ports:
