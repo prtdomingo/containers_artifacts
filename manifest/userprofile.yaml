@@ -26,28 +26,39 @@ spec:
         ports:
           - containerPort: 80
             name: http
+        volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
         env:
           - name: SQL_PASSWORD
             valueFrom:
                 secretKeyRef:
-                  name: app-oh-secret
-                  key: SQL_PASSWORD
+                  name: akv-secrets
+                  key: SQL-PASSWORD
           - name: SQL_SERVER
             valueFrom:
                 secretKeyRef:
-                  name: app-oh-secret
-                  key: SQL_SERVER
+                  name: akv-secrets
+                  key: SQL-SERVER
           - name: SQL_USER
             valueFrom:
                 secretKeyRef:
-                  name: app-oh-secret
-                  key: SQL_USER
+                  name: akv-secrets
+                  key: SQL-USER
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "akv-openhack"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: userprofile
-  namespace: ingress-basic
+  namespace: api
 spec:
   type: ClusterIP
   ports:
